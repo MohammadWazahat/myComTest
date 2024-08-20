@@ -2,28 +2,29 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useUpdateCommentMutation } from "../../redux/features/apiSlices/myCommentSlice";
 import axios from "axios";
+import ReplyComment from "./ReplyComment";
 
 const ComSingleTest = () => {
   const { id } = useParams();
   // console.log(id)
-
+const [allComments , setAllCOmments] = useState([])
   const [myDatas, setMyDatas] = useState();
   const [comment, setComment] = useState([]);
-  const [comArr, setComArr] = useState([]);
-  const [log, setLog] = useState();
 
   useEffect(() => {
     const datas = axios
       .get(`http://localhost:3008/comTest/` + id)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         //   location.reload();
         setMyDatas(res.data);
+        setAllCOmments(res.data.comment)
       });
     // console.log(datas)
   }, []);
-
+// console.log(allComments)
   // console.log(myDatas);
+
   const [updateComment] = useUpdateCommentMutation();
 
   const inputChangeHandler = (e) => {
@@ -44,9 +45,11 @@ const ComSingleTest = () => {
     updateComment(myDatasCom);
   };
 
+  // console.log(myDatas.comment)
   return (
     <div>
       i m single tet
+      <section>
       <div>
         <form onSubmit={submitForm}>
           <input
@@ -61,6 +64,19 @@ const ComSingleTest = () => {
           <button type="submit">Submit in</button>
         </form>
       </div>
+      </section>
+      <section>
+        <div>
+        {allComments.map((item, index) => {
+            return (
+              <div key={index}>
+                {item}
+                {/* <ReplyComment/> */}
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 };
